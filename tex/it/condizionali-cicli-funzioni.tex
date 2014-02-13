@@ -1,0 +1,236 @@
+\chapter{Condizionali, cicli e funzioni}
+\label{condizionali-cicli-funzioni}
+
+Costrutti condizionali, cicli e funzioni sono accomunati in \python\ 
+dall'essere istruzioni \emph{composite}, che abbracciano cio\`e pi\`u
+linee. La loro sintassi \`e sempre del tipo
+\[
+\begin{array}{l}
+\textrm{intestazione}\,\,: \\
+\,\,\,\,\,\,\,\,\textrm{istruzioni\,\, indentate}
+\end{array}
+\]
+L'indentazione\index{indentazione} \`e arbitraria, ma deve essere la
+stessa per tutte le istruzioni che fanno parte del costrutto.
+
+\section{Costrutto \istr{if} \istr{elif}  \istr{else} }
+
+Il costrutto \istr{if} utilizza la seguente sintassi:
+\begin{minted}{python}
+if a>0:
+  print("a e' positivo")
+elif a<0:
+  print("a e' negativo")
+else:
+  print("a non e' ne' negativo ne' positivo")
+  print("a e' zero")
+\end{minted}
+Le parti \istr{elif} e \istr{else} sono opzionali.
+
+\section{Ciclo \istr{while}}
+
+Il costrutto \istr{while} utilizza la seguente sintassi\footnote{
+Esiste anche una forma pi\`u articolata di ciclo \istr{while} che
+include un ramo \istr{else}. Tale ramo viene eseguito se l'uscita dal
+ciclo non \`e stata causata dall'isctruzione \istr{break}.}:
+\begin{minted}{python}
+i = 0
+while i < 10:
+  print("iterazione %d" % i)
+  i += 1
+print("iterazioni terminate")
+print("i vale %d" % i)
+\end{minted}
+
+\section{Ciclo \istr{for}}
+
+Una peculiarit\`a del ciclo \istr{for} in \python\ \`e il fatto che
+tipicamente non si utilizza un contatore ma si itera sugli oggetti di
+una sequenza, ovvero una stringa, una tupla, una lista o un
+\istr{numpy.ndarray}. Avremo dunque i seguenti cicli
+\begin{minted}{python}
+for carattere in "ciao!":
+  print("carattere vale '%s'" % carattere)
+  print("inizia una nuova iterazione")
+print("iterazioni terminate")
+\end{minted}
+oppure
+\begin{minted}{python}
+for x in ( 1.2 , [1,2,3] , "casa" ):
+  print("x vale ")
+  print(x)
+print("iterazioni terminate")
+\end{minted}
+oppure
+\begin{minted}{python}
+import numpy as np
+v = np.array([ 1.0 , 2.0 , 3.0 ])
+for vi in v:
+  print("vi vale %f" % vi)
+print("iterazioni terminate")
+\end{minted}
+Si noti che questi cicli potrebbero essere realizzati in modo
+equivalente introducendo degli indici; per esempio potremmo sostituire
+l'ultimo ciclo con
+\begin{minted}{python}
+for i in range(0,v.size):
+  print("v[i] vale %f" % v[i])
+print("iterazioni terminate")
+\end{minted}
+Questa seconda alternativa risulta per\`o pi\`u macchinosa.
+
+\section{Funzioni}
+\label{sec:funzioni}
+
+Per definire una funzione, possiamo utilizzare la sintassi seguente:
+\begin{minted}{python}
+# __future__ permette di usare end=' ' nella funzione print
+from __future__ import print_function
+
+def somma(x,y):
+  s = x+y
+  print("La somma vale:",end=" ")
+  print(s)
+  return s
+\end{minted}
+A questo punto potremo chiamare la funzione \istr{somma} come una
+qualunque funzione predefinita di \python:
+\begin{minted}{python}
+>>> z = somma(1,2)
+La somma vale: 3
+>>> z
+3
+\end{minted}
+
+Gli argomenti \istr{x} e \istr{y} e la variabile \istr{s} sono locali
+alla funzione \istr{somma} e sono indipendenti da nomi uguali definiti
+al di fuori della funzione stessa. Avremo cos\`i:
+\begin{minted}{python}
+>>> x,y,s = 3.2 , 1.0+2.0j , 40
+>>> z = somma(1,2)
+La somma vale: 3
+>>> x,y,s
+(3.2, (1+2j), 40)
+\end{minted}
+
+L'istruzione \istr{return} \`e facoltativa e se non viene specificata
+la funzione restituisce \istr{None}. \istr{return} permette di
+restituire un solo oggetto; se si vogliono restituire pi\`u oggetti
+\`e comunque possibile aggirare tale limitazione raccogliendoli in una
+tupla:
+\begin{minted}{python}
+>>> def somma_differenza(x,y):
+...   s = x+y
+...   d = x-y
+...   return s,d
+... 
+>>> a,b = somma_differenza(1,2)
+>>> a
+3
+>>> b
+-1
+\end{minted}
+
+\subsection{Aspetti notevoli delle funzioni}
+Ci sono vari aspetti delle funzioni definite tramite la parola chiave
+\istr{def} che sono di particolare importanza nel calcolo numerico e
+pi\`u in generale nella programmazione in \python. Ne citiamo qui
+alcuni.
+
+In primo luogo, osserviamo che le funzioni sono, al pari di tutte le
+entit\`a che definiamo in \python, degli oggetti, caratterizzati dal
+proprio tipo:
+\begin{minted}{python}
+>>> somma   # visualizza il valore dell'oggetto somma
+<function somma at 0x20c2758>
+>>> type(somma)
+<type 'function'>
+\end{minted}
+Questo fa s\`i che le funzioni possano essere copiate, passate a loro
+volta come argomenti di altre funzioni e inserite come componenti di
+altri oggeti, come mostra l'esempio seguente:
+\begin{minted}{python}
+>>> def f(x):
+...   return x**3
+... 
+>>> def df(x):
+...   return 3.0*x**2
+... 
+>>> dati = { 'funzione':f , 'derivata':df }
+>>> dati['funzione'](5.0)
+125.0
+>>> dati['derivata'](5.0)
+75.0
+\end{minted}
+Rispetto agli altri tipi finora incontrati, la particolarit\`a del
+tipo \istr{function} \`e che, tra i propri metodi, include anche
+\istr{\_\_call\_\_}, che corrisponde alla chiamata tramite la sintassi
+\istr{nome\_funzione(argomenti)}.
+
+In secondo luogo, osserviamo che le funzioni sono sempre
+\emph{polimorfiche}\index{polimorfismo}, ovvero possono operare su
+oggetti differenti\footnote{ Pi\`u precisamente, \python\ utilizza un
+sistema di tipi dinamico nel quale la validit\`a della semantica \`e
+determinata dai membri della classe. Tale sistema \`e detto \emph{duck
+typing}\index{duck typing} ed \`e stato spiegato
+cos\`i~\cite{martelli:ipsedixit}: ``In other words, don't check
+whether it IS-a duck: check whether it QUACKS-like-a duck,
+WALKS-like-a duck, etc, etc, depending on exactly what subset of
+duck-like behaviour you need to play your language-games with''.
+Questo significa che l'interprete \python\ non verifica il tipo degli
+oggetti, ma solo se tale tipo - qualunque esso sia - possieda i membri
+necessari per l'esecuzione del codice. Nel caso della funzione
+\istr{somma}, questo significa che il tipo degli argomenti deve
+permettere l'operazione \istr{x+y}.}. Ad esempio, la funzione
+\istr{somma} appena definita pu\`o operare su qualunque coppia di
+oggetti per la quale sia definito l'operatore \istr{+}:
+\begin{minted}{python}
+>>> z = somma('vado ','a casa')
+La somma vale: vado a casa
+>>> z
+'vado a casa'
+>>> v1 = np.array([ 1.0 , 2.0 , 3.0 ])
+>>> v2 = np.array([-3.0 ,-5.0 ,-10.0])
+>>> z = somma(v1,v2)
+La somma vale: [-2. -3. -7.]
+>>> z
+array([-2., -3., -7.])
+\end{minted}
+
+Una terza considerazione riguarda il meccanismo di passaggio degli
+argomenti. Tale passaggio avviene sempre come se si utilizzasse
+l'operatore di assegnazione \istr{=}. Dopo la chiamata
+\begin{minted}{python}
+somma(X1,X2)
+\end{minted}
+all'interno della funzione \istr{somma} avremo dunque: una referenza
+\istr{x} che punta al medesimo oggetto identificato da \istr{X1} e una
+referenza \istr{y} che punta al medesimo oggetto identificato da \istr{X2}.
+Cambiamenti effettuati su \istr{x} e \istr{y} all'interno della
+funzione potranno avere o meno effetti sugli oggetti identificati da
+\istr{X1} e \istr{X2},
+rispettivamente\index{oggetto!immutabile}\index{oggetto!mutabile}, a
+seconda che tali oggetti siano mutabili o immutabili e seguendo le
+regole illustrate nella \Sref{sect:mutabili-immutabili}. Si
+considerino in proposito i seguenti esempi:
+\begin{minted}{python}
+>>> def f1(n):
+...   n = 2*n # la referenza n viene ridefinita
+...   return n
+... 
+>>> p = 5
+>>> q = f1(p)
+>>> p,q
+(5, 10)
+>>> 
+>>> def f2(L):
+...   L.append(51) # l'oggetto associato a L viene modificato
+...   return L
+... 
+>>> a = [1,2,3]
+>>> b = f2(a)
+>>> a,b
+([1, 2, 3, 51], [1, 2, 3, 51])
+>>> b is a
+True
+\end{minted}

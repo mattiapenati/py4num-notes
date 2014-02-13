@@ -1,0 +1,19 @@
+syntax: glob
+*.aux
+*.bbl
+*.bbg
+*.bcf
+*.blg
+*.idx
+*.ild
+*.ind
+*.log
+*.maf
+*.mtc*
+*.out
+*.synctex.gz
+*.swp
+*.thm
+*.toc
+*.xml
+

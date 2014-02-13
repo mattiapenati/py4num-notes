@@ -1,0 +1,64 @@
+\chapter{Esecuzione di programmi \file{.py}}
+\label{cap:esecuzione-programmi}
+
+Indichiamo con il termine ``programma'' l'insieme delle istruzioni \python\
+contenute in un file con estensione \file{.py}. Per eseguire tale programma, vi
+sono varie possibilit\`a, anche in funzione dell'ambiente di lavoro adottato.
+Consideriamo qui le alternative seguenti:
+\begin{itemize}
+  \item esecuzione tramite l'interprete \python,
+  \item esecuzione da un interprete di comandi in linea.
+\end{itemize}
+
+L'esecuzione tramite interprete \python\ avviene tipicamente invocando tale
+interprete da linea di comando, ad esempio con
+\begin{minted}{bash}
+$ python file.py
+\end{minted}
+oppure, in ambiente Windows, \lq\lq cliccando\rq\rq\ sull'icona del
+file \file{file.py}.
+
+Nel caso si volesse specificare la versione dell'interprete,
+tipicamente si user\`a
+\begin{minted}{bash}
+$ /usr/bin/python2.7 file.py
+\end{minted}
+ovvero
+\begin{minted}{bash}
+$ /usr/bin/python3.2 file.py
+\end{minted}
+
+L'interprete di comandi in linea viene invece attivato con
+\begin{minted}{bash}
+$ python
+\end{minted}
+oppure, volendo usare \ipython,
+\begin{minted}{bash}
+$ ipython
+\end{minted}
+Una volta attivato tale interprete, possiamo ``eseguire'' il file \file{.py} con
+le istuzioni \istr{import}\index{import}
+e \istr{reload}\index{reload}\footnote{Propriamente parliamo di \emph{parola
+chiave} per \istr{import} e \emph{funzione} per \istr{reload}. In queste note,
+il termine \emph{istruzione} \`e utilizzato come termine generico.}. Per motivi
+di efficienza, \istr{import} esegue il file \file{.py} solo la prima volta che
+viene invocata. Se il file viene successivamente modificato e si desidera
+eseguirlo nuovamente \`e necessario utilizzare \istr{reload}. D'altra parte, non
+\`e possibile utilizzare \istr{reload} se prima non si \`e importato il file
+almeno una volta.
+
+Come primo esempio, possiamo provare le varie modalit\`a di esecuzione
+utilizzando il seguente file \file{esempio1.py}
+\begin{minted}{python}
+print("Un primo esempio di programma Python")
+x = 10
+y = 3
+z = x*y
+print("z = x+y = {0}".format(z))
+\end{minted}
+
+Nei capitoli successivi si discutono i vari aspetti del linguaggio \python, che
+sono indipendenti dal fatto che le corrispondenti istruzioni vengano raccolte in
+un file \file{.py} o inserite utilizzando la linea di comando dell'interprete
+\python.
+

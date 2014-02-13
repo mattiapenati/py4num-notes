@@ -1,0 +1,118 @@
+\chapter{Altri costrutti utili}
+\label{altri-costrutti-utili}
+
+In questo capitolo vengono descritti alcuni costrutti specifici del
+linguaggio \python\ che non hanno un corrispettivo diretto nella
+maggior parte degli altri linguaggi.
+
+\section{List comprehension}
+
+Le \textit{list comprehension}\index{list comprehension} sono un
+modo conciso di creare una lista, utilizzando una notazione che
+richiama quella usata in matematica per la definizione degli insiemi.
+Si tratta di un costrutto che sintetizza elementi della sintassi delle
+liste e di quella dei cicli \istr{for}.
+
+Supponendo di voler creare una lista con i quadrati dei primi cinque
+interi, una possibilit\`a sarebbe:
+\begin{minted}{python}
+>>> quadrati = []
+>>> for i in range(5):
+...   quadrati.append(i**2)
+...
+>>> quadrati
+[0, 1, 4, 9, 16]
+\end{minted}
+Una \textit{list comprehension} d\`a lo stesso risultato
+in modo pi\`u conciso:
+\begin{minted}{python}
+>>> quadrati = [ i**2 for i in range(5) ]
+\end{minted}
+Le \textit{list comprehension} possono sostituire anche pi\`u cicli
+annidati e includere una parte condizionale, come mostrano i due
+esempi seguenti:
+\begin{minted}{python}
+>>> # Prodotto cartesiano di [0,1] con se stesso
+>>> cartesiano = []
+>>> for i in range(2):
+...   for j in range(2):
+...     cartesiano.append((i,j))
+...
+>>> cartesiano
+[(0, 0), (0, 1), (1, 0), (1, 1)]
+>>> # o equivalentemente
+>>> cartesiano = [ (i,j) for i in range(2) for j in range(2) ]
+\end{minted}
+e, nel caso di istruzioni condizionali utilizzate per \emph{filtrare}
+una lista:
+\begin{minted}{python}
+>>> # Multipli di 3 minori di 15 
+>>> a = [ i for i in range(15) if i % 3 == 0 ]
+>>> a
+[0, 3, 6, 9, 12]
+\end{minted}
+
+\section{L'operatore ternario}
+
+\`E possibili utilizzare una sintassi che ricorda quella del costrutto
+\istr{if} per ottenere un'espressione sintatticamente equivalente
+all'operatore ternario condizionale \istr{?:} del linguaggio C:
+\begin{minted}{python}
+>>> x = -1
+>>> absx = x if x > 0 else -x # (x > 0) ? x : -x
+>>> absx
+1
+\end{minted}
+%Ma prima della versione 2.5 in \python non esisteva un costrutto
+%sintattico che permetesse di costruire tale espression, per\`o
+%era possibile utilizzare i connettivi logici e sfruttare lo
+%\textit{short circuiting} per emulare l'operatore ternario
+%condizionale. Cos\`i questo ultimo esempio pu\`o essere 
+%riscritto come
+%\begin{minted}{python}
+%>>> x = -1
+%>>> absx = (x > 0) and x or -x
+%>>> absx
+%1
+%\end{minted}
+%Questa sintassi per\`o non \`e equivalente all'operatore 
+%ternario condizionale, infatti come vediamo dall'esempio
+%seguente non sempre opera in modo corretto
+%\begin{minted}{python}
+%>>> (1 > 0) and 0 or 1
+%1
+%\end{minted}
+
+\section{Funzioni lambda}
+
+\python\ supporta una sintassi che permette di definire funzioni in
+una singola linea, detta \emph{lambda expression}\index{lambda
+expression}.
+
+Ogni \emph{lambda expression} \`e definita dall'elenco degli argomenti
+e dal corpo della funzione, con una sintassi molto simile a quella
+utilizzata in matematica. Ad esempio, la funzione \istr{somma}
+introdotta nella ~\Sref{sec:funzioni} pu\`o essere definita in
+modo analogo come
+\begin{minted}{python}
+>>> somma = lambda x, y : x + y
+>>> somma
+<function <lambda> at 0x215be60>
+>>> somma(2.0,3.5)
+5.5
+\end{minted}
+Tale sintassi non prevede la parola chiave \istr{return} e pu\`o
+essere utilizzata solo per definire funzioni date da una singola
+istruzione.
+
+L'utilit\`a delle funzioni lambda come alternativa alle funzioni
+definite dalla parola chiave \istr{def} st\`a spesso nella
+possibilit\`a di definire piccole funzioni ``monouso'' in modo
+sintetico. Ad esempio, funzioni lambda definite in loco sono
+utilizzabili come argomenti in altre funzioni (\emph{higher-order
+functions}), come in
+\begin{minted}{python}
+>>> map(lambda x : x**2, range(5))
+[0, 1, 4, 9, 16]
+\end{minted}
+

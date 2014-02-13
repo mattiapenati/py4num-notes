@@ -1,0 +1,663 @@
+\chapter{Variabili e tipi di dati}
+\label{variabili-tipi-dati}
+
+Con l'istruzione
+\begin{minted}{python}
+a = 5
+\end{minted}
+possiamo definire una variabile \istr{a} alla quale associamo il valore 5.
+Possiamo verificare tale valore con l'istruzione\footnote{In queste note, le
+istruzioni \python\ sono riportate includendo il ``prompt'' \istr{>>>} quando
+si vuole riportare sia l'istruzione sia il risultato mostrato dall'interprete
+dei comandi. Diversamente, i caratteri \istr{>>>} sono omessi.}
+\begin{minted}{python}
+>>> a
+5
+\end{minted}
+che stampa a video il valore della variabile. In alternativa, potremmo
+utilizzare l'istruzione
+\begin{minted}{python}
+>>> print(a)
+5
+\end{minted}
+che fornisce la medesima informazione\footnote{Nel caso di dati pi\`u complessi
+di un semplice numero intero, la funzione \istr{print()} visualizza il valore
+in modo pi\`u leggibile rispetto al semplice richiamare il nome della
+variabile, che invece fornisce una rappresentazione pi\`u prossima a quella
+interna del calcolatore.}. In \ipython, ulteriori informazioni si possono
+ottenere con \index{magic function}
+\begin{minted}{python}
+%who  # utilizza la "magic function" %who -> vedi %who?
+%whos # utilizza la "magic function" %whos -> vedi %whos?
+a?    # utilizza il sistema di documentazione ? di ipython
+\end{minted}
+
+\section{Oggetti mutabili e immutabili}
+\label{sect:mutabili-immutabili}
+
+Un aspetto fondamentale di \python, potenzialmente fonte di numerosi errori,
+\`e la gestione degli oggetti. Il modello utilizzato \`e il seguente:
+\begin{itemize}
+  \item gli oggetti sono creati la prima volta che vengono referenziati e
+    salvati in memoria,
+  \item i nomi (ovvero le variabili) definiti dal programma sono delle
+    referenze agli oggetti creati in memoria,
+  \item ciascun oggetto, una volta creato, \`e caratterizzato come
+    \emph{mutabile}\index{oggetto!mutabile} o
+    \emph{immutabile}\index{oggetto!immutabile}, secondo il suo tipo.
+\end{itemize}
+Alla luce di questo modello, all'istruzione
+\begin{minted}{python}
+a = 5
+\end{minted}
+corrispondono le azioni seguenti:
+\begin{itemize}
+  \item un oggetto di tipo \istr{int} viene creato allocando la
+    corrispondente area di memoria e memorizzando il valore 5
+  \item al nome \istr{a} viene associata una referenza all'oggetto
+    appena crato
+  \item essendo il tipo \istr{int} immutabile, l'oggetto creato sar\`a
+    immutabile.
+\end{itemize}
+Possiamo controllare il tipo dell'oggetto creato con
+\begin{minted}{python}
+>>> type(a)
+<type 'int'>
+\end{minted}
+Se ora eseguiamo l'istruzione
+\begin{minted}{python}
+b = a
+\end{minted}
+viene creata una nuova referenza al medesimo oggetto e viene associata al nome
+\istr{b}. Possiamo verificare che le due referenze puntano al medesimo oggetto
+con
+\begin{minted}{python}
+>>> b is a
+True
+\end{minted}
+Se ora eseguiamo l'istruzione
+\begin{minted}{python}
+a = 7
+\end{minted}
+creiamo in memoria un nuovo oggetto di tipo intero il cui valore \`e 7,
+e assegnamo la referenza \istr{a} a tale oggetto. La referenza \istr{b} continua
+a puntare all'oggetto definito in precedenza. Se poi eseguiamo
+\begin{minted}{python}
+b = 8
+\end{minted}
+creiamo un terzo oggetto di tipo \istr{int} e valore 8 e ridefiniamo il nome
+\istr{b} come referenza a tale oggetto. Il primo oggetto creato, di valore 5,
+a questo punto non \`e pi\`u referenziato e viene distrutto, recuperando la
+memoria corrispondente. Poich\'e il tipo \istr{int} \`e immutabile, oggetti di
+tipo \istr{int} non possono essere modificati, ma solo creati o distrutti. In
+altre parole, le due successive istruzioni
+\begin{minted}{python}
+a = 5
+a = 7
+\end{minted}
+non assegnano due valori distinti alla medesima area di memoria etichettata
+\istr{a}, bens\`i creano in memoria due oggetti distinti ridefinendo l'etichetta
+\istr{a}. I tipi immutabili che incontreremo sono\footnote{Propriamente, mentre
+gli altri tipi qui elencati sono predefiniti, il tipo \istr{numpy.int64} \`e
+definito dal modulo \numpy\ ed \`e quindi disponibile solo dopo che tale modulo
+\`e stato importato: si veda la \Sref{sez:array-di-numpy}. Nel seguito di
+queste note, non si far\`a differenza tra gli oggetti nativi di \python\
+e quelli definiti da \numpy\ e \scipy.}: \istr{int}, \istr{float},
+\istr{complex}, \istr{numpy.int64}, \istr{str} e \istr{tuple}.
+
+L'importanza del modello sopra descritto \`e minima finch\'e si considerano
+i soli tipi immutabili, ma diventa rilevante quando si considerano i tipi
+mutabili. I tipi mutabili che incontreremo sono: \istr{list}, \istr{dict}
+e \istr{numpy.ndarray}. Consideriamo infatti le seguenti istruzioni:
+\begin{minted}{python}
+>>> a = [1.0,1.5,2.5,3.8]
+>>> type(a)
+<type 'list'>
+>>> b = a
+>>> c = [1.0,1.5,2.5,3.8]
+>>> a is b
+True
+>>> a is c
+False
+>>> a == c
+True
+\end{minted}
+La prima istruzione crea un oggetto di tipo \istr{list} e associa al nome
+\istr{a} una referenza a tale oggetto. La seconda istruzione crea una seconda
+referenza al medesimo oggetto e la associa al nome \istr{b}. La terza istruzione
+crea un \emph{secondo} oggetto di tipo \istr{list} e associa al nome \istr{c}
+una referenza a tale oggetto. A questo punto i nomi \istr{a} e \istr{b} sono
+referenze al medesimo oggetto, o pi\`u brevemente \emph{sono} il medesimo
+oggetto, quindi \istr{a is b} restituisce \istr{True}. D'altra parte, \istr{c}
+\`e un secondo oggetto, che ``per caso'' risulta essere uguale al primo, quindi
+\istr{a is c} restituisce \istr{False} mentre \istr{a == c} restituisce
+\istr{True}. La cosa \`e rilevante perch\`e il tipo \istr{list}, come
+anticipato, \`e mutabile, e quindi possiamo modificare gli oggetti che abbiamo
+appena creato, ad esempio con
+\begin{minted}{python}
+a[2] = -5.1
+\end{minted}
+A questo punto avremo:
+\begin{minted}{python}
+>>> a
+[1.0, 1.5, -5.1, 3.8]
+>>> b
+[1.0, 1.5, -5.1, 3.8]
+>>> c
+[1.0, 1.5, 2.5, 3.8]
+\end{minted}
+dove si vede come l'oggetto referenziato da \istr{a} e \istr{b} \`e cambiato
+mentre quello referenziato da \istr{c} no.
+
+\subsection{Alcune ulteriori precisazioni}
+
+Il risultato delle istruzioni seguenti sembra contraddire in parte quanto
+discusso in precedenza:
+\begin{minted}{python}
+>>> a = 5
+>>> b = 5
+>>> a is b
+True
+\end{minted}
+In altre parole, se le due referenze sono create indipendentemente, come \`e
+possibile che siano il medesimo oggetto? La risposta \`e che, per oggetti
+immutabili e relativamente ``semplici'', \python non crea duplicati ma utilizza
+punta tutte le referenze al medesimo oggetto. La stessa cosa vale per le
+stringhe, purch\'e siano, appunto, ``semplici'':
+\begin{minted}{python}
+>>> s1 = 'CI'
+>>> s2 = 'CI'
+>>> s1 is s2
+True
+>>> s1 = 'CIAO!'
+>>> s2 = 'CIAO!'
+>>> s1 is s2
+False
+\end{minted}
+Trattandosi di oggetti immutabili, questo dettaglio non ha alcun effetto
+visibile da parte dell'utente, ad eccezione del risultato del test \istr{is}.
+
+La seconda precisazione riguarda gli oggetti mutabili: il fatto che siano
+mutabili non significa che non sia possibile ridefinire le corrispondenti
+referenze. Consideriamo infatti l'esempio seguente:
+\begin{minted}{python}
+>>> a = [1.0,1.5,2.5,3.8]
+>>> a[2] = -5.1
+>>> a
+[1.0, 1.5, -5.1, 3.8]
+>>> a = -5.1
+>>> a
+-5.1
+\end{minted}
+Il primo assegnamento modifica l'oggetto referenziato da \istr{a}, assegnando il
+valore $-5.1$ al terzo elemento della lista. Il secondo assegnamento invece
+ridefinisce la variabile \istr{a} come referenza all'oggetto \istr{float} di
+valore $-5.1$ (la lista definita precedentemente e referenziata da \istr{a}
+verr\`a quindi distrutta dal sistema che recupera la corrispondente memoria).
+
+\section{Tipi di dati predefiniti}
+
+In questa sezione, passiamo velocemente in rassegna i principali tipi di dati
+predefiniti, richiamando le principali operazioni che possono essere effettuate
+su di essi.
+
+\subsection{Tipi numerici}
+
+Alcuni oggetti di vari tipi numerici possono essere ottenuti con
+\begin{minted}{python}
+>>> i=3
+>>> type(i)
+<type 'int'>
+>>> x=3.0
+>>> type(x)
+<type 'float'>
+>>> z=3.0+2j
+>>> type(z)
+<type 'complex'>
+\end{minted}
+Per questi tipi sono definite le usuali operazioni matematiche:
+\begin{minted}{python}
+>>> i + x*z
+(12+6j)
+\end{minted}
+Occorre per\`o prestare attenzione all'operatore \istr{/} che, in \python\
+2.$x$, ha un significato differente quando applicato a interi o reali:
+\begin{minted}{python}
+>>> 5/2
+2
+>>> 5.0/2.0
+2.5
+\end{minted}
+L'operatore di elevamento a potenza \`e \istr{**}.
+
+Per ciascun tipo esistono poi svariati metodi, che possono essere elencati con
+l'istruzione \istr{dir}
+\begin{minted}{python}
+dir(z)
+\end{minted}
+o equivalentemente,
+\begin{minted}{python}
+dir(complex)
+\end{minted}
+Vediamo ad esempio che per una variabile di tipo \istr{complex} possiamo
+richiamare i metodi\footnote{La presenza o meno delle parentesi si spiega
+osservando che \istr{real} e \istr{imag} sono attributi mentre \istr{conjugate}
+\`e una funzione.}
+\begin{minted}{python}
+>>> z
+(3+2j)
+>>> z.real
+3.0
+>>> z.imag
+2.0
+>>> z.conjugate()
+(3-2j)
+\end{minted}
+
+\subsection{Stringhe}
+
+Una stringa pu\`o essere definita come
+\begin{minted}{python}
+>>> s = 'ciao!'  # nota: ' e " sono equivalenti
+>>> type(s)
+<type 'str'>
+>>> s
+'ciao!'
+>>> print(s)
+ciao!
+\end{minted}
+Una stringa \`e indicizzabile con la sintassi
+\istr{s[ inizio : fine : passo]} con le seguenti convenzioni:
+\begin{itemize}
+  \item gli indici partono da 0
+  \item indici negativi vengono presi partendo dall'ultimo carattere
+  \item \istr{inizio} si intende \emph{incluso}
+  \item \istr{fine} si intende \emph{escluso}
+  \item \istr{passo} pu\`o essere omesso quando vale 1
+  \item \istr{inizio} pu\`o essere omesso quando vale 0
+  \item \istr{fine} pu\`o essere omesso quando vale -1.
+\end{itemize}
+Avremo quindi\index{indici}:
+\begin{minted}{python}
+>>> s[0]    # primo elemento: indice 0
+'c'
+>>> s[0:2]  # el. con indice da 0 (incluso) a 2 (escluso)
+'ci'
+>>> s[:2]   # come la precedente, 0 sottointeso
+'ci'
+>>> s[2:]   # el. con indice maggiore o uguale a 2 (incluso)
+'ao!'
+>>> s[:]    # tutti gli elementi
+'ciao!'
+>>> s[::2]  # uno ogni due di tutti gli elementi
+'ca!'
+>>> s[-1]   # l'ultimo elemento
+'!'
+>>> s[-3:-1] # dal terzultimo (incluso) all'ultimo (escluso)
+'ao'
+>>> s[::-1] # tutti gli elementi, in ordine inverso (passo<0)
+'!oaic'
+\end{minted}
+Le stringhe per\`o sono immutabili, quindi non possiamo modificare una
+stringa dopo averla creata:
+\begin{minted}{python}
+>>> s[0] = 'C'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  TypeError: 'str' object does not support item assignment
+\end{minted}
+L'unica possibilit\`a \`e crearne una nuova, lasciando che il sistema
+distrugga quella vecchia nel caso non venga referenziata da altri
+nomi:
+\begin{minted}{python}
+s = 'Ciao!'
+\end{minted}
+
+I principali metodi disponibili per variabili di tipo \istr{str} sono
+richiamati in \tref{tab:stringhe}.
+\begin{table}[htb]%
+\centering%
+\begin{tabularx}{\hsize}{>{\bfseries}lX}
+  \toprule%
+  Metodo & Descrizione  \\
+  \midrule%
+    \istr{str.count(sub[,start[,end]])} &
+      Numero di occorrenze della stringa \istr{sub}
+      nell'intervallo \istr{[begin:end]}. \\
+    \istr{str.find(sub[,start[,end]])} &
+      Indice della stringa \istr{sub}. La
+      ricerca viene limitata all'intervallo \istr{[begin:end]}.
+      Ritorna \istr{-1} se \istr{sub} non viene trovata. \\
+    \istr{str.join(iterable)} &
+      Stringa ottenuta concatenando gli elementi
+      del contenitore \istr{iterable}. La stringa \istr{str}
+      \`e utilizzata come separatore. \\
+    \istr{str.replace(old,new[,count])} &
+      Copia della stringa nella quale \istr{old}
+      \`e sostituito con \istr{new}. \istr{count}
+      determina il numero massimo di sostituzioni. \\
+    \istr{str.split([sep[,maxsplit]])} &
+      Lista delle parole contenute in \istr{str}, usando \istr{sep}
+      come separatore. La lista avr\`a al pi\`u \istr{maxsplit + 1}
+      elementi. \\
+  \bottomrule
+\end{tabularx}
+\caption{Riepilogo dei principali metodi per oggetti di tipo
+\istr{str}.\label{tab:stringhe}}
+\end{table}
+
+\subsection{Tuple}
+
+Le tuple sono collezioni immutabili di oggetti (non necessariamente
+omogenei) e vengono create come
+\begin{minted}{python}
+>>> t=(1,'casa',2+4j)
+>>> type(t)
+<type 'tuple'>
+>>> t
+(1, 'casa', (2+4j))
+\end{minted}
+Le parentesi in realt\`a possono essere omesse, quindi le due righe
+seguenti sono equivalenti
+\begin{minted}{python}
+>>> t=(1,'casa',2+4j)
+>>> t
+(1, 'casa', (2+4j))
+>>> u=1,'casa',2+4j
+>>> u
+(1, 'casa', (2+4j))
+\end{minted}
+Le medesime considerazioni fatte per le stringhe in quanto a
+indicizzabilit\`a e immutabilit\`a si applicano alle tuple.
+
+\subsubsection{Particolarit\`a delle tuple}
+
+Le tuple sono collezioni immutabili di oggetti, ma non necessariamente
+collezioni di oggetti immutabili. Definita la lista (mutabile)
+\begin{minted}{python}
+a = [1.0,1.5,2.5,3.8]
+\end{minted}
+possiamo definire la tupla
+\begin{minted}{python}
+>>> tt = (a,'casa')
+>>> tt
+([1.0, 1.5, 2.5, 3.8], 'casa')
+\end{minted}
+A questo punto possiamo modificare la lista contenuta in \istr{tt}, ma
+non possiamo modificare \istr{tt} stessa:
+\begin{minted}{python}
+>>> tt[0].append(10.0)
+>>> tt
+([1.0, 1.5, 2.5, 3.8, 10.0], 'casa')
+>>> tt[0] = [-1.0,-1.5,-2.5]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+\end{minted}
+
+Una seconda particolarit\`a riguarda l'uso di tuple a sinistra
+dell'uguale per assegnare in un colpo solo pi\`u variabili:
+\begin{minted}{python}
+>>> (a,b,c) = ( 1.0 , ['vado','a','casa'] , (1,2,3) )
+>>> a
+1.0
+>>> b
+['vado', 'a', 'casa']
+>>> c
+(1, 2, 3)
+\end{minted}
+Questa sintassi pu\`o essere utilizzata per comprimere in una sola
+linea operazioni molto semplici, che in generale prevedono un numero
+maggiore di istruzioni. Ad esempio, se volessimo scambiare due
+variabili \istr{a}, \istr{b} applicando la stessa logica adottata
+nel linguaggio C sarebbero necessarie tre istruzioni
+\begin{minted}{python}
+>>> t = a
+>>> a = b
+>>> b = t
+\end{minted}
+ma utilizzando le tuple possiamo scrivere
+\begin{minted}{python}
+>>> a,b = b,a
+\end{minted}
+Le due operazioni sono identiche, ma sicuramente la seconda \`e
+sintatticamente pi\`u espressiva.
+
+\subsection{Liste}
+
+Una lista pu\`o essere pensata come una tupla mutabile. La sintassi
+per la definizione delle liste \`e
+\begin{minted}{python}
+>>> l=[1,'casa',2+4j]
+>>> type(l)
+<type 'list'>
+>>> l
+[1, 'casa', (2+4j)]
+\end{minted}
+Valgono per le liste le medesime considerazioni fatte per le tuple, ad
+eccezione di quanto riguarda la mutabilit\`a ed il fatto che le liste
+non possono essere usate a sinistra dell'uguale per assegnamenti
+multipli. In effetti, ora possiamo fare
+\begin{minted}{python}
+>>> l[0]=5
+>>> l
+[5, 'casa', (2+4j)]
+\end{minted}
+Essendo mutabili, le liste sono provviste di pi\`u metodi delle tuple, come si
+vede con \istr{dir(l)} o con \istr{dir(list)}. Alcuni di tali metodi sono
+richiamati in \tref{tab:liste}; informazioni pi\`u dettagliate si possono
+ottenere con, ad esempio, con \istr{help(l.append)}.
+
+\begin{table}[htb]%
+\centering%
+\begin{tabularx}{\hsize}{>{\bfseries}lX}
+  \toprule%
+  Metodo & Descrizione  \\
+  \midrule%
+    \istr{list.append(x)} &
+      Aggiunge l'oggetto \istr{x} alla fine della lista. \\
+    \istr{list.insert(i,x)} &
+      Aggiunge l'oggetto \istr{x} nella posizione \istr{i}. \\
+    \istr{list.pop([i])} &
+      Rimuove l'\istr{i}-esimo oggetto e lo ritorna; se \istr{i} viene
+      omesso, si assume l'ultimo elemento. \\
+    \istr{list.sort()} &
+      Ordina la lista, \textit{in place}. \\
+    \istr{list.reverse()} &
+      Inverte gli elementi della lista, \textit{in place}. \\
+  \bottomrule
+\end{tabularx}
+\caption{Riepilogo dei principali metodi per oggetti di tipo
+\istr{list}.}
+\label{tab:liste}
+\end{table}
+
+\subsection{Dizionari}
+
+Sono simili alle liste, con la differenza che l'accesso agli elementi
+non avviene tramite un indice intero ma tramite una stringa:
+\begin{minted}{python}
+>>> d = { 'campo1':1 , 'C2':'casa' , 'xyz':2+4j }
+>>> type(d)
+<type 'dict'>
+>>> d
+{'campo1': 1, 'xyz': (2+4j), 'C2': 'casa'}
+>>> d['campo1']
+1
+>>> d['C2']
+'casa'
+>>> d['xyz']
+(2+4j)
+\end{minted}
+Mentre gli elementi di tuple e liste sono ordinati, quelli di un
+dizionario rappresentano una collezione non ordinata.
+
+\subsection{Array di \numpy}
+\label{sez:array-di-numpy}
+
+Sebbene vettori e matrici possano essere rappresentati tramite liste,
+questa soluzione sarebbe poco conveniente perch\'e le liste non
+supportano le usuali operazioni dell'algebra lineare:
+\begin{minted}{python}
+>>> l1=[ 1.0 , 2.0 ,  3.0]
+>>> l2=[-3.0 ,-5.0 ,-10.0]
+>>> l1+l2
+[1.0, 2.0, 3.0, -3.0, -5.0, -10.0]
+\end{minted}
+Per tale motivo, rappresenteremo sempre vettori e matrici come array
+$n$-dimensionali di \numpy. Avremo dunque
+\begin{minted}{python}
+>>> import numpy as np
+>>> v1 = np.array([ 1.0 , 2.0 ,  3.0])
+>>> v2 = np.array([-3.0 ,-5.0 ,-10.0])
+>>> v1+v2
+array([-2., -3., -7.])
+\end{minted}
+
+Gli array di \numpy, a differenza delle liste, sono \emph{omogenei},
+in quanto i loro elementi sono sempre tutti di tipo
+\istr{numpy.int64}. Tali array sono mutabili e supportano le medesime
+operazioni di indicizzazione viste per le stringhe e le liste:
+\begin{minted}{python}
+>>> v1
+array([ 1.,  2.,  3.])
+>>> v1[0:2]=8,12 # elementi da 0 (incluso) a 2 (escluso)
+>>> v1
+array([  8.,  12.,   3.])
+\end{minted}
+
+Array di dimensione maggiore di 1 possono essere ottenuti ed
+indicizzati\index{indici!multipli} nel modo seguente:
+\begin{minted}{python}
+>>> M = np.array([[1, 2], [3, 4], [2.4,-10]])
+>>> M
+array([[  1. ,   2. ],
+       [  3. ,   4. ],
+       [  2.4, -10. ]])
+>>> M[2,0]
+2.3999999999999999
+>>> print(M[2,0])
+2.4
+>>> M[1,:] # seconda riga
+array([ 3.,  4.])
+>>> M[:,0] # prima colonna
+array([ 1. ,  3. ,  2.4])
+>>> M[:,-1] # ultima colonna
+array([  2.,   4., -10.])
+>>> M[0:2,:] # righe da 0 (inclusa) a 2 (esclusa)
+array([[ 1.,  2.],
+       [ 3.,  4.]])
+\end{minted}
+
+I \istr{numpy.ndarray} supportano tutte le usuali operazioni
+dell'algebra delle matrici. A tal proposito, gli operatori
+\istr{+}, \istr{-}, \istr{*}, \istr{/} e \istr{**} sono sempre
+applicati componente per componente. Altre importanti funzioni sono
+\istr{np.ndarray.transpose}, \istr{np.dot}, \istr{np.min},
+\istr{np.max} e \istr{np.sum}, per le quali si rimanda alla
+documentazione fornita da \istr{help}.
+
+\section{I tipi della famiglia delle sequenze}
+
+Stringhe, tuple e liste sono casi particolari di una classe di tipi
+che possiedono una sintassi comune, le \emph{sequenze}\index{sequenze}
+\footnote{Per la precisione ci sono sette diversi tipi che sono
+considerate sequenze: \istr{str}, \istr{unicode}, \istr{list},
+\istr{tuple}, \istr{bytearray}, \istr{buffer}, \istr{xrange}.}.
+
+\`E possibile verificare se una sequenza contenga o meno un
+particolare elemento utilizzando la parola chiave \istr{in},
+\begin{minted}{python}
+>>> 'ell' in 'Hello world'
+True
+>>> 4 in (1,2,3)
+False
+>>> 4 not in (1,2,3)
+True
+>>> 1 not in [1,2,3,4]
+False
+\end{minted}
+Sequenze dello stesso tipo possono essere concatenate con l'operatore
+\istr{+}
+\begin{minted}{python}
+>>> 'Hello' + 'world'
+'Helloworld'
+>>> [1,2] + [3,4]
+[1,2,3,4]
+>>> [1,2] + 'ab' # tipi differenti -> operazione non permessa
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate list (not "str") to list
+\end{minted}
+Con le parentesi quadre \`e possibile accedere agli elementi che
+costituiscono la sequenza, con la stessa sintassi mostrata per il
+tipo \istr{str}
+\begin{minted}{python}
+>>> [1,2,3,4][1:-1]
+[2,3]
+>>> (1,2,3,4)[1:-1]
+(2,3)
+>>> '1234'[1:-1]
+'23'
+>>> 'supercalifragilisticexpialidocious'[3:-5:2]
+'eclfaiitcxild'
+\end{minted}
+Nel caso la sequenza sia mutabile, l'operatore \istr{[]} permette di
+modificare gli elementi della struttura, altrimenti l'assegnamento non
+\`e possibile:
+\begin{minted}{python}
+>>> a = [1,2,3,4]
+>>> a[1] = 5
+>>> a
+[1, 5, 3, 4]
+>>> a = '1234'
+>>> a[1] = '5'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+\end{minted}
+La funzione \istr{len} ritorna la lunghezza della sequenza e i metodi
+\istr{count} e \istr{index}, rispettivamente, il numero di occorrenze
+e l'indice della prima occorrenza,
+\begin{minted}{python}
+>>> len('Hello world')
+11
+>>> 'Hello world'.count('l')
+3
+>>> 'Hello world'.index('o')
+4
+\end{minted}
+Infine, \`e possibile costruire una sequenza concatenando una
+serie di repliche con l'operatore \istr{*}
+\begin{minted}{python}
+>>> 'o' * 3
+'ooo'
+>>> [1,2] * 4
+[1,2,1,2,1,2,1,2]
+\end{minted}
+
+\subsection{Attenzione alle repliche di oggetti mutabili!}
+
+Quando si costruiscono repliche di oggetti mutabili, occorre ricordare
+che in \python\ in effetti si costruiscono repliche delle referenze a
+tali oggetti. Osserviamo l'esempio seguente:
+\begin{minted}{python}
+>>> a = []      # a e' una lista, quindi mutabile
+>>> b = [a] * 3
+>>> b
+[[], [], []]
+>>> a += [1]    # a viene modificata
+>>> b
+[[1], [1], [1]] # l'effetto si ripercuote su b
+\end{minted}
+Analogamente, avremo:
+\begin{minted}{python}
+# L'oggetto inizialmente associato ad a viene ora modificato
+# tramite una delle referenze contenute in b.
+>>> b[0][0] = 3
+>>> a
+[3]
+>>> b
+[[3], [3], [3]]
+\end{minted}
+

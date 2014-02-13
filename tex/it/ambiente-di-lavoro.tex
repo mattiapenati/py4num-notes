@@ -1,0 +1,66 @@
+\chapter{Ambiente di lavoro}
+\label{cap:ambiente-di-lavoro}
+
+Con il termine \python\ si fa spesso riferimento a due oggetti che in realt\`a
+sono tra loro distinti:
+\begin{itemize}
+  \item il linguaggio di programmazione \python
+  \item il software utilizzato per eseguire un programma scritto in linguaggio
+    \python.
+\end{itemize}
+L'ambiente di lavoro cui si fa riferimento in queste note, oltre a \python,
+include i seguenti pacchetti specifici per le applicazioni di calcolo numerico:
+\begin{itemize}
+  \item \numpy: una libreria \python\ con gli strumenti base del calcolo
+    scientifico, quali vettori, matrici, funzioni di algebra lineare,
+    trasformate di Fourier, analisi statistiche ecc. La libreria \`e disponibile
+    all'indirizzo \url{http://numpy.scipy.org/}.
+  \item \scipy: una libreria \python\ che estende \numpy\ fornendo
+    funzioni di pi\`u alto livello, quali matrici sparse, interpolazione,
+    risoluzione di equazioni alle derivate ordinarie ecc. La libreria \`e
+    disponibile all'indirizzo \url{http://www.scipy.org/}.
+  \item \ipython: una shell interattiva con molti strumenti utili, tra cui
+    l'evidenziamento della sintassi. \`E disponibile all'inidirizzo
+    \url{http://ipython.org/}.
+\end{itemize}
+
+% =============================================================================
+
+\section{Il linguaggio \python}
+
+Citando dal sito \url{www.python.it}: ``Python \`e un linguaggio di
+programmazione ad alto livello, rilasciato pubblicamente per la prima volta nel
+1991 dal suo creatore Guido van Rossum, programmatore olandese attualmente
+operativo in Google. [\ldots] Attualmente, lo sviluppo di Python (grazie
+e soprattutto all'enorme e dinamica comunit\`a internazionale di sviluppatori)
+viene gestito dall'organizzazione no-profit Python Software
+Foundation~\cite{PythonSoftwareFoundation}.''
+
+Sono attualmente in uso due versioni del linguaggio: 2.7 e 3.3. Il fatto che le
+versioni 2.x siano ancora utilizzate \`e dovuto alla mancanza di compatibilit\`a
+all'indietro delle versioni 3.x, che risultano quindi incompatibili con un
+gran numero di programmi attualmente in uso.
+
+La documentazione ufficiale \`e disponibile in rete all'indirizzo
+\url{http://docs.python.org/}.
+
+% =============================================================================
+
+\section{L'esecuzione di un programma \python}
+
+Semplificando un po' il problema, \python \`e un linguaggio interpretato, il che
+significa che un programma \python\ viene passato ad un interprete \python\ che
+lo esegue. L'interprete pi\`u utilizzato \`e CPython ed \`e scritto in C.
+
+Usando CPython, un programma \python, contenuto in un file con estensione
+\emph{.py} viene dapprima compilato in \emph{byte code}\index{byte code},
+ottenendo un file con estensione \emph{.pyc}, e successivamente eseguito. Il
+\emph{byte code} \`e una rappresentazione di pi\`u basso livello rispetto al
+sorgente \python\ originale ma di pi\`u alto livello rispetto al codice
+macchina, ed \`e indipendente dall'hardware considerato.
+
+Una modalit\`a di esecuzione alternativa \`e quella tramite interprete di
+comandi in linea (ad esempio, usando \ipython), nella quale ciascuna istruzione
+\python\ viene immediatamente interpretata ed eseguita dopo essere stata immessa
+(per maggiori dettagli si rimanda al \Cref{cap:esecuzione-programmi}).
+

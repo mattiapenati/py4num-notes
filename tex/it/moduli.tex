@@ -1,0 +1,132 @@
+\chapter{Moduli}
+\label{moduli}
+
+In \python, i moduli costituiscono la pi\`u ampia entit\`a in cui le
+istruzioni possono essere raccolte. Dal punto di vista pratico,
+ciascun file corrisponde ad un modulo che ha lo stesso nome del file.
+Come anticipato nel \Cref{cap:esecuzione-programmi}, i moduli
+possono essere eseguiti ed importati con i comandi \istr{import} e
+\istr{reload}. In questo capitolo, descriviamo il funzionamento dei
+moduli in modo pi\`u dettagliato.
+
+Consideriamo un file \file{mod\_a.py} contenente le istruzioni
+\begin{minted}{python}
+"""
+Esempio di modulo Pyhton: definisce una funzione e una
+variabile float e ne scrive il valore a schermo.
+"""
+def somma(x,y):
+  s = x+y
+  return s
+X = 8.5
+print(X)
+\end{minted}
+Tale modulo pu\`o essere importato con
+\begin{minted}{python}
+>>> import mod_a  # il modulo viene eseguito ed importato
+8.5
+>>> type(mod_a)   # e' stato definito un oggetto mod_a
+<type 'module'>
+>>> mod_a
+<module 'mod_a' from 'mod_a.py'>
+\end{minted}
+L'istruzione \istr{import} ha due effetti: esegue il file
+\file{mod\_a.py}, che tra le varie cose esegue \istr{print(X)}, e
+definisce l'oggetto \istr{mod\_a} di tipo \istr{module}. Tutti gli
+oggetti definiti in \file{mod\_a.py} ``riaffiorano'' come attributi
+dell'oggetto\footnote{Oltre agli attributi corrispondenti agli oggetti
+definiti in \file{mod\_a.py} sono presenti anche altri attributi
+definiti automaticamente per gli oggetti di tipo \istr{module}.}
+\istr{mod\_a}:
+\begin{minted}{python}
+>>> dir(mod_a)
+['X', '__builtins__', '__doc__', '__file__', '__name__',
+ '__package__', 'somma']
+>>> mod_a.X
+8.5
+>>> mod_a.somma
+<function somma at 0x7f887effb500>
+>>> mod_a.somma(3,5)
+8
+\end{minted}
+In questo modo, i moduli permettono sia di eseguire il codice salvato in
+un file sia di utilizzarlo in altri file o interattivamente
+dall'interprete \python.
+
+\`E spesso comodo utilizzare, per i moduli importati, un nome pi\`u
+breve di quello usato per il file che li contiene. Questo \`e
+possibile nel modo seguente:
+\begin{minted}{python}
+>>> import mod_a as ma
+8.5
+>>> ma
+<module 'mod_a' from 'mod_a.py'>
+\end{minted}
+
+Inoltre, i commenti inseriti all'inizio del file rappresentano un
+\emph{docstring}\index{docstring} e possono essere visualizzati, dopo
+aver importato il modulo, con \istr{help(ma)}.
+
+\section{Importare un modulo pi\`u di una volta}
+
+Come accennato nel \Cref{cap:esecuzione-programmi}, un modulo viene importato
+una volta sola: successive chiamate a \istr{import} non hanno alcun effetto:
+\begin{minted}{python}
+>>> import mod_a  # il modulo viene eseguito ed importato
+8.5
+>>> import mod_a  # modulo gia' importato: nessun effetto
+\end{minted}
+Questo implica che, se il file \file{mod\_a.py} viene modificato dopo
+essere stato importato, non \`e possibile importare la versione
+modificata. In questo caso \`e necessario usare la funzione
+\istr{reload}, contenuta nel modulo \istr{imp}:
+\begin{minted}{python}
+>>> import mod_a  # il modulo viene eseguito ed importato
+8.5
+>>> import imp
+>>> imp.reload(mod_a) # eseguito ed importato nuovamente
+8.5
+<module 'mod_a' from 'mod_a.py'>
+\end{minted}
+L'elenco dei moduli gi\`a importati pu\`o essere ottenuto con
+\istr{sys.modules.keys()}, che naturalmente richiede prima
+\istr{import sys}\index{modulo sys}.
+
+\section{L'istruzione \istr{from}}
+
+L'istruzione \istr{from} \`e analoga a import, ma anzich\'e creare un
+oggetto di tipo \istr{module} gli oggetti del modulo vengono copiati
+nell'ambiente dove tale istruzione viene invocata. Avremo dunque:
+\begin{minted}{python}
+>>> from mod_a import X
+8.5
+>>> X # anziche' mod_a.X
+8.5
+\end{minted}
+L'istruzione \istr{from mod\_a import *} copia tutti gli oggetti
+definiti in \file{mod\_a.py} nell'ambiente dove viene invocata -
+questa sintassi per\`o pu\`o essere fonte di confusione ed \`e spesso
+sconsigliata. Per le copie ottenute con l'istruzione \istr{from}
+valgono tutte le osservazioni fatte precedentemente circa le copie di
+oggetti mutabili e immutabili.
+
+\section{Gestione dei file}
+
+Le istruzioni \istr{import} e \istr{from} richiedono il solo nome del
+file senza estensione, non \`e cio\`e possibile specificare il
+percorso al file. Il file viene a questo punto ricercato nella
+collezione dei percorsi di ricerca\index{percorso di ricerca} (o
+\emph{search path}\index{path}). Tale collezione \`e contenuta in
+\istr{sys.path} (accessibile dopo aver importato il modulo
+\istr{sys}), e viene definita seguendo regole relativamente complesse.
+Ci limitiamo qui a citare gli elementi seguenti:
+\begin{itemize}
+\item la cartella corrente \`e sempre inclusa al primo posto, indicata
+con una stringa vuota
+\item sono poi presenti le cartelle che fanno parte dell'installazione
+dell'interprete \python\ dove si trovano i moduli della libreria
+standard\index{libreria standard}
+\item \`e possibile aggiungere cartelle con l'istruzione
+\istr{sys.path.append}.
+\end{itemize}
+
